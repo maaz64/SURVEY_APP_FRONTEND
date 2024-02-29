@@ -13,7 +13,7 @@ function useRefreshToken() {
         setAuth((prev)=>{
 
             return{...prev,
-                token: res.data.data.accessToken}
+                acessToken: res.data.data.accessToken}
         })
 
         return res.data.data.acessToken;

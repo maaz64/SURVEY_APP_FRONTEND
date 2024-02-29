@@ -6,9 +6,8 @@ import SignInPage from "./Components/SignInPage";
 import SurveyForm from "./Components/SuveyForm";
 import Profile from "./Components/Profile";
 import ErrorPage from "./Components/ErrorPage";
-
 import RequireAuth from "./Components/RequireAuth";
-import PersistLogin from "./Components/PersistLogin";
+// import PersistLogin from "./Components/PersistLogin";
 
 import { ToastContainer } from "react-toastify";
 
@@ -24,11 +23,11 @@ function App() {
           <Route path="signup" element={<SignUpPage />} />
 
           {/* protected route */}
-          <Route element={<PersistLogin/>}>
+          {/* <Route element={<PersistLogin/>}> */}
             <Route element={<RequireAuth />}>
               <Route path="profile" element={<Profile />} />
             </Route>
-          </Route>
+          {/* </Route> */}
 
           {/* Missing route */}
           <Route path="*" element={<ErrorPage />} />

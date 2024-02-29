@@ -9,10 +9,10 @@ import {
   OutlinedInput,
 } from '@mui/material';
 
-import axios from 'axios';
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from '../axios/axios';
 
 const SurveyForm = () => {
   const [formData, setFormData] = useState({
@@ -39,7 +39,8 @@ const SurveyForm = () => {
   const handleSubmit = async(e) => {
       try {
         e.preventDefault();
-        const res =  await axios.post('/survey/add-data',formData);
+        const res =  await axiosInstance.post('/survey/add-data',formData);
+        console.log('surveyResponse',res);
         clearInput();
         toast.success(res.data.message);
     } catch (error) {

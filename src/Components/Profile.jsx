@@ -1,30 +1,33 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+// import axiosInstance from "../axios/axios";
+// import axios from "axios";
+import useAuth from "../hooks/useAuth";
 import axiosInstance from "../axios/axios";
 
 
 export default function Profile() {
 
-    const [survey, setSurvey] = useState([]);
-    const token = JSON.parse(localStorage.getItem('token'));
-    
+  const [survey, setSurvey] = useState([]);
+  // const token = JSON.parse(localStorage.getItem('token'));
+  const { auth } = useAuth();
 
-    useEffect(()=>{
-        const getAllSurveys = async()=>{
 
-                if(token){
-                    const res = await axiosInstance.get('/survey/get-all-data', {
-                        headers: {
-                          Authorization: 'Bearer ' + token,
-                        }
-                    })
-                    console.log(res)
-                    setSurvey(res.data.data.surveys);
-                }
-                
+  useEffect(() => {
+    const getAllSurveys = async () => {
+
+
+      const res = await axiosInstance.get('/survey/get-all-data', {
+        headers: {
+          Authorization: `Bearer ${auth.accessToken}`,
         }
-        getAllSurveys();
+      })
+      console.log(res)
+      setSurvey(res.data.data.surveys);
+    }
 
-    },[token])
+    getAllSurveys();
+
+  }, [auth])
 
   return (
     <div>

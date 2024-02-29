@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, {  useState } from 'react';
 import {
   Button,
   Container,
@@ -14,7 +14,7 @@ import axiosInstance from '../axios/axios';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
+import useAuth from '../hooks/useAuth';
 
 const SignInPage = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +23,7 @@ const SignInPage = () => {
   });
   const [sucess, setSucess] = useState(false);
 
-  const { Auth, setAuth } = useContext(AuthContext);
+  const {auth,setAuth} = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -39,16 +39,18 @@ const SignInPage = () => {
     e.preventDefault();
     try {
       const res = await axiosInstance.post('/sign-in', formData);
-      const token = res?.data?.data?.token;
+      const accessToken = res?.data?.data?.accessToken;
+      const refreshToken = res?.data?.data?.refreshToken;
       const userId = res?.data?.data?.userId;
       const name = res?.data?.data?.name;
-      const email = formData.email;
-      const password = formData.password;
-      setAuth({ token, userId, name, email, password });
+      console.log(`accessToken:${accessToken} refreshToken:${refreshToken} userId: ${userId} name:${name}`)
+      console.log("res in signin page",res);
+      setAuth({ userId, name, refreshToken, accessToken});
       clearInput();
       setSucess(true);
   
       navigate('/profile');
+      console.log('auth state from signin page', auth);
       toast.success(res.data.message)
 
     } catch (error) {

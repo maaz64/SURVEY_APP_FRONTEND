@@ -19,7 +19,7 @@ import axiosInstance from '../axios/axios';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { Outlet, useNavigate, Link} from 'react-router-dom';
+import { Outlet, useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 
 const drawerWidth = 240;
@@ -30,22 +30,26 @@ function NavBar(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = useState(false);
     const navigate = useNavigate();
-    const {auth, setAuth} = useContext(AuthContext);
+    const { auth, setAuth } = useContext(AuthContext);
 
-    const LogOut = async()=>{
+    const LogOut = async () => {
+        setAuth({});
         try {
             await axiosInstance.post('/logout');
-            setAuth({});
+            
             navigate('/');
             toast.success("Logged Out!!!");
-    
+
         } catch (error) {
-          if (!error?.response) {
-            toast.error('No Server Response');
-          }else
-            toast.error('Logout Failed');
+            if (!error?.response) {
+                toast.error('No Server Response');
+            } else if (error?.response.status) {
+                toast.error('Unauthorised')
+            }
+            else
+                toast.error('Logout Failed');
         }
-        
+
     }
 
     const handleDrawerToggle = () => {
@@ -62,7 +66,7 @@ function NavBar(props) {
                 <ListItem disablePadding component={Link} to="/">
                     <ListItemButton sx={{ textAlign: 'center' }}>
                         <ListItemText primary={'Home'} />
-                        
+
                     </ListItemButton>
                 </ListItem>
                 {auth?.userId ?
@@ -127,23 +131,23 @@ function NavBar(props) {
                             <Button sx={{ color: '#fff' }} component={Link} to='/'>
                                 Home
                             </Button>
-                            {auth?.userId?<>
-                            <Button sx={{ color: '#fff' }} component={Link} to='/profile'>
-                                Profile
-                            </Button>
-                            <Button sx={{ color: '#fff' }}  onClick={LogOut}>
-                                LogOut
-                            </Button>
-                            
-                            </>:<>
-                            <Button sx={{ color: '#fff' }} component={Link} to="/login">
-                                Login
-                            </Button>
-                            <Button sx={{ color: '#fff' }} component={Link} to='/signup'>
-                                SignUp
-                            </Button>
+                            {auth?.userId ? <>
+                                <Button sx={{ color: '#fff' }} component={Link} to='/profile'>
+                                    Profile
+                                </Button>
+                                <Button sx={{ color: '#fff' }} onClick={LogOut}>
+                                    LogOut
+                                </Button>
+
+                            </> : <>
+                                <Button sx={{ color: '#fff' }} component={Link} to="/login">
+                                    Login
+                                </Button>
+                                <Button sx={{ color: '#fff' }} component={Link} to='/signup'>
+                                    SignUp
+                                </Button>
                             </>}
-                            
+
                         </Box>
                     </Toolbar>
                 </AppBar>
