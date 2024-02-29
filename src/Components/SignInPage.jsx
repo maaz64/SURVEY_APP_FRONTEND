@@ -50,7 +50,6 @@ const SignInPage = () => {
       setSucess(true);
   
       navigate('/profile');
-      console.log('auth state from signin page', auth);
       toast.success(res.data.message)
 
     } catch (error) {

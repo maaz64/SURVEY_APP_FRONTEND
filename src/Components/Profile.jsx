@@ -1,39 +1,63 @@
-import { useContext, useEffect, useState } from "react";
-// import axiosInstance from "../axios/axios";
-// import axios from "axios";
-import useAuth from "../hooks/useAuth";
-import axiosInstance from "../axios/axios";
+import { useEffect, useState } from "react";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useNavigate } from 'react-router-dom';
 
 
 export default function Profile() {
 
   const [survey, setSurvey] = useState([]);
-  // const token = JSON.parse(localStorage.getItem('token'));
-  const { auth } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+
 
 
   useEffect(() => {
+
+    let isMounted = true;
+    const controller = new AbortController();
+
     const getAllSurveys = async () => {
 
+      try {
+        const res = await axiosPrivate.get('/survey/get-all-data');
+        console.log(res.data.data.surveys);
+        isMounted && setSurvey(res.data.data.surveys);
+        setLoading(false);
+      } catch (error) {
+        navigate('/login')
 
-      const res = await axiosInstance.get('/survey/get-all-data', {
-        headers: {
-          Authorization: `Bearer ${auth.accessToken}`,
-        }
-      })
-      console.log(res)
-      setSurvey(res.data.data.surveys);
+      }
     }
 
     getAllSurveys();
 
-  }, [auth])
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    }
+
+  }, [])
 
   return (
-    <div>
-      <h1>This is Profile</h1>
-      <h2>Total Survey : {survey.length}</h2>
+    <div className="profile">
+      {
+        loading ? <h2>Loading...</h2> :
+          <>
+            <h1>This is Profile</h1>
+            <h2>Total Survey : {survey.length}</h2>
+            {survey.map(s => {
+              return (<>
+                <div key={s._id} className="surveys" >
+                  <h3>{s.name}</h3>
+                  <p>{s.message}</p>
+                </div>
 
+              </>)
+            })}
+          </>
+      }
     </div>
   )
 }

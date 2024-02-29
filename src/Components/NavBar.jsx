@@ -14,7 +14,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-
 import axiosInstance from '../axios/axios';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,7 +34,9 @@ function NavBar(props) {
     const LogOut = async () => {
         setAuth({});
         try {
-            await axiosInstance.post('/logout');
+            await axiosInstance.post('/logout',{
+                withCredentials:true,
+            });
             
             navigate('/');
             toast.success("Logged Out!!!");

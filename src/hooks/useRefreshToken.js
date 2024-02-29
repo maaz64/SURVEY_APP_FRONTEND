@@ -1,26 +1,21 @@
-import useAuth from "./useAuth"
-import axiosInstance  from '../axios/axios';
-
+import useAuth from "./useAuth";
+import axiosInstance from "../axios/axios";
 
 function useRefreshToken() {
+  const { setAuth } = useAuth();
 
-    const {setAuth} = useAuth();
-  
-    const refresh = async()=>{
-        const res =  await axiosInstance.post('/refresh-token');
-        console.log("response in useRefreshToken", res);
-        console.log("response data in useRefreshToken", res.data);
-        setAuth((prev)=>{
+  const refresh = async () => {
+    const res = await axiosInstance.post("/refresh-token");
+    console.log("accessToken", res.data.data.accessToken);
+    console.log("refreshToken", res.data.data.refreshToken);
+    setAuth((prev) => {
+      return { ...prev, accessToken: res.data.data.accessToken };
+    });
 
-            return{...prev,
-                acessToken: res.data.data.accessToken}
-        })
+    return res.data.data.accessToken;
+  };
 
-        return res.data.data.acessToken;
-    }
-
-    return refresh;
-
+  return refresh;
 }
 
-export default useRefreshToken
+export default useRefreshToken;
